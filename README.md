@@ -1,3 +1,3 @@
 # Structure
 
-![Structure](./res/hexatac.svg)
+![Structure](./res/hexatac.png)
