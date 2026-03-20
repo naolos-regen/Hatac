@@ -1,0 +1,4 @@
+#ifndef HATAC_MOVE_STRATEGY
+# define HATAC_MOVE_STRATEGY
+
+#endif
