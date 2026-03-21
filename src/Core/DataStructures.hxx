@@ -23,6 +23,8 @@ namespace Hatac
 		T x;
 		T y;
 		
+		Move () = default;
+
 		Move ( std::pair<T, T> xy ) 
 			: x(xy.first)
 			, y(xy.second) 
@@ -64,7 +66,21 @@ namespace Hatac
 			this->x--;
 			this->y--;
 			return (*this);
-		}
+		};
+		
+		Move & operator ++ (int)
+		{
+			Move tmp(*this);
+			++(*this);
+			return tmp;
+		};
+
+		Move & operator -- (int)
+		{
+			Move tmp(*this);
+			--(*this);
+			return tmp;
+		};
 
 		Move & operator <<= ( const Move & value )
 		{
@@ -79,30 +95,42 @@ namespace Hatac
 			this->y = this->y >> value.y;
 			return (*this);
 		};
-
-		Move & operator += ( const Move & value )
+		
+		template <typename C, typename EnablerC>
+		Move & operator += ( const Move<C, EnablerC> & value )
 		{
-			this->x = this->x - value.x;
-			this->y = this->y - value.y;
+			this->x = this->x + static_cast<T>(value.x);
+			this->y = this->y + static_cast<T>(value.y);
+			return (*this);
+		};
+
+		template <typename C, typename EnablerC>
+		Move & operator -= ( const Move<C, EnablerC> & value )
+		{
+			this->x = this->x - static_cast<T>(value.x);
+			this->y = this->y - static_cast<T>(value.y);
 			return (*this);
 		};
 
 
-		Move & operator -= ( const Move & value )
+		template <typename C, typename EnablerC>
+		Move operator + ( const Move<C, EnablerC> & o ) const
 		{
-			this->x = this->x - value.x;
-			this->y = this->y - value.y;
-			return (*this);
-		}
-
-		Move & operator + ( const Move & o )
-		{
-			return Move(this->x + o.x, this->y + o.y);
+			return Move
+				(
+				 this->x + static_cast<T>(o.x), 
+				 this->y + static_cast<T>(o.y)
+				);
 		};
-
-		Move & operator - ( const Move & o )
+		
+		template <typename C, typename EnablerC>
+		Move operator - ( const Move<C, EnablerC> & o ) const
 		{
-			return Move(this->x - o.x, this->y - o.y);
+			return Move
+				(
+				 this->x - static_cast<T>(o.x), 
+				 this->y - static_cast<T>(o.y)
+				);
 		};
 
 		bool operator == ( const Move& other ) const
