@@ -14,14 +14,16 @@
 
 #define _HATAC_MOVE_TYPE_TEMPLATE template <typename T, typename Enabler>
 #define _HATAC_MOVE Move<T, Enabler>
+#define _HATAC_MOVE_TEMPLATE_INSIDE template <typename C, typename EnablerC>
+#define _HATAC_MOVE_TYPE_INSIDE Move<C, EnablerC>
 
 namespace Hatac
 {
 	_HATAC_MOVE_TEMPLATE
 	struct Move 
 	{
-		T x;
-		T y;
+		T x = 0;
+		T y = 0;
 		
 		Move () = default;
 
@@ -81,40 +83,41 @@ namespace Hatac
 			--(*this);
 			return tmp;
 		};
-
-		Move & operator <<= ( const Move & value )
-		{
-			this->x = this->x << value.x;
-			this->y = this->y << value.y;
-			return (*this);
-		};
-
-		Move & operator >>= ( const Move & value )
-		{
-			this->x = this->x >> value.x;
-			this->y = this->y >> value.y;
-			return (*this);
-		};
 		
-		template <typename C, typename EnablerC>
-		Move & operator += ( const Move<C, EnablerC> & value )
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move & operator += ( const _HATAC_MOVE_TYPE_INSIDE & value )
 		{
 			this->x = this->x + static_cast<T>(value.x);
 			this->y = this->y + static_cast<T>(value.y);
 			return (*this);
 		};
 
-		template <typename C, typename EnablerC>
-		Move & operator -= ( const Move<C, EnablerC> & value )
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move & operator -= ( const _HATAC_MOVE_TYPE_INSIDE & value )
 		{
 			this->x = this->x - static_cast<T>(value.x);
 			this->y = this->y - static_cast<T>(value.y);
 			return (*this);
 		};
 
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move & operator *= ( const _HATAC_MOVE_TYPE_INSIDE & value )
+		{
+			this->x = this->x * static_cast<T>(value.x);
+			this->y = this->y * static_cast<T>(value.y);
+			return (*this);
+		};
+		
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move & operator /= ( const _HATAC_MOVE_TYPE_INSIDE & value )
+		{
+			this->x = this->x / static_cast<T>(value.x);
+			this->y = this->y / static_cast<T>(value.y);
+			return (*this);
+		};
 
-		template <typename C, typename EnablerC>
-		Move operator + ( const Move<C, EnablerC> & o ) const
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move operator + ( const _HATAC_MOVE_TYPE_INSIDE & o ) const
 		{
 			return Move
 				(
@@ -123,13 +126,33 @@ namespace Hatac
 				);
 		};
 		
-		template <typename C, typename EnablerC>
-		Move operator - ( const Move<C, EnablerC> & o ) const
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move operator - ( const _HATAC_MOVE_TYPE_INSIDE & o ) const
 		{
 			return Move
 				(
 				 this->x - static_cast<T>(o.x), 
 				 this->y - static_cast<T>(o.y)
+				);
+		};
+
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move operator * ( const _HATAC_MOVE_TYPE_INSIDE & o ) const
+		{
+			return Move
+				(
+				 this->x * static_cast<T>(o.x),
+				 this->y * static_cast<T>(o.y)
+				);
+		};
+
+		_HATAC_MOVE_TEMPLATE_INSIDE
+		Move operator / ( const _HATAC_MOVE_TYPE_INSIDE & o ) const
+		{
+			return Move
+				(
+				 this->x / static_cast<T>(o.x),
+				 this->y / static_cast<T>(o.y)
 				);
 		};
 
@@ -153,7 +176,6 @@ namespace Hatac
 	{
 		return { this->x, this->y };
 	};
-
 };
 
 #endif
